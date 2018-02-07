@@ -1,0 +1,2 @@
+# promotions
+Software programming test
