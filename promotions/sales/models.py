@@ -20,14 +20,10 @@ class Product(db.Model):
                              backref=db.backref('products', lazy='dynamic'))
     price = db.Column(db.Integer)
 
-    def __init__(self, **kwargs):
-        self.name = kwargs.get('name', '')
-        self.description = kwargs.get('description', '')
-        self.seller = kwargs.get('seller')
-        self.price = kwargs.get('price', 0)
-
     def __repr__(self):
         return 'Product "%r"' % self.name
+
+    # TODO: move `products.py` logic as class/instance methods
 
 
 class Promotion(db.Model):
@@ -37,3 +33,9 @@ class Promotion(db.Model):
                               backref=db.backref('promotions', lazy='dynamic'))
     discount = db.Column(db.Integer, default=0)
     shipping_discount = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return ('Promotion "%r", discount %d%, shipping discount %d%'
+                % (self.product, self.discount, self.shipping_discount))
+
+    # TODO: move `promotions.py` logic as class/instance methods

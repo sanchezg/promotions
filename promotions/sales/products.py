@@ -8,13 +8,12 @@ from promotions.sales.models import Product, Seller
 def new_product_item(data):
     """Creates a new product in DB with data uploaded by the user.
     """
-    name = data.get('name', '')
-    description = data.get('description', '')
-    price = data.get('price', 0)
+    product = Product()
+    product.name = data.get('name', '')
+    product.description = data.get('description', '')
+    product.price = data.get('price', 0)
     seller_id = data.get('seller_id')
-    seller = Seller.query.filter(Seller.id == seller_id).one()
-    product = Product(name=name, description=description, price=price,
-                      seller=seller)
+    product.seller = Seller.query.filter(Seller.id == seller_id).one()
     db.session.add(product)
     db.session.commit()
 
