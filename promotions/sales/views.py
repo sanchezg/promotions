@@ -2,14 +2,15 @@
 """
 from flask import request
 from flask_restplus import Resource
-from sales.restplus import api
-from sales.models import Product, Promotion
-from sales.parsers import pagination_arguments, promotion_filters
-from sales.serializers import (product_item, page_of_products, promotion_item,
-                               page_of_promotions)
-from sales.products import (new_product_item, update_product_item,
-                            delete_product_item)
-from sales.promotions import new_promotion, update_promotion, delete_promotion
+from promotions.sales.restplus import api
+from promotions.sales.models import Product, Promotion
+from promotions.sales.parsers import pagination_arguments, promotion_filters
+from promotions.sales.serializers import (product_item, page_of_products,
+                                          promotion_item, page_of_promotions)
+from promotions.sales.products import (new_product_item, update_product_item,
+                                       delete_product_item)
+from promotions.sales.promotions import (new_promotion, update_promotion,
+                                         delete_promotion)
 
 
 ns = api.namespace('sales', description='Sales endpoints')
@@ -84,7 +85,7 @@ class PromotionCollection(Resource):
 
         query = Promotion.query
         if product_id is not None:
-            query = query.filter(product_id=product_id)
+            query = query.filter(Promotion.product_id == product_id)
         promotions = query.paginate(page, per_page, error_out=False)
 
         return promotions

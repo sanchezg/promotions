@@ -1,5 +1,8 @@
+"""CRUD functions for Product model.
+"""
+
 from promotions.database import db
-from sales.models import Product, Seller
+from promotions.sales.models import Product, Seller
 
 
 def new_product_item(data):

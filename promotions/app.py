@@ -3,7 +3,7 @@ import logging
 from flask import Flask, Blueprint
 from promotions import settings
 from promotions.sales.views import ns
-from promotions.api.restplus import api
+from promotions.sales.restplus import api
 from promotions.database import db
 
 app = Flask(__name__)
@@ -27,7 +27,7 @@ def initialize_app(flask_app):
 
 def main():
     initialize_app(app)
-    app.run(debug=settings.FLASK_DEBUG)
+    app.run()
 
 
 if __name__ == "__main__":

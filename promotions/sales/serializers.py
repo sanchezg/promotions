@@ -1,5 +1,5 @@
 from flask_restplus import fields
-from sales.restplus import api
+from promotions.sales.restplus import api
 
 product_item = api.model('Product item', {
     'id': fields.Integer(readOnly=True,
