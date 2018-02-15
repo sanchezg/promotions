@@ -33,12 +33,12 @@ def products_factory(app, amount):
     products = []
     sample_df = load_dataset(sample=amount,
                              columns=['product_name', 'description', 'price'])
-    pbar = tqdm(sample_df)
     with app.app_context():
         sellers = Seller.query.all()
     if not sellers:
         raise "There's no Sellers in DB, please populate with sellers before creating products"
-    for row in pbar:
+    pbar = tqdm(sample_df.iterrows())
+    for _, row in pbar:
         pbar.set_description("Creating products")
         p = Product()
         p.name = row['product_name']
@@ -46,7 +46,7 @@ def products_factory(app, amount):
         p.price = row['price']
         p.seller = choice(sellers)
         with app.app_context():
-            db.session.append(p)
+            db.session.add(p)
             db.session.commit()
         products.append(p)
     return products
@@ -62,15 +62,15 @@ def promotions_factory(amount):
         products = Product.query.all()
     if not products:
         raise "There's no products in DB, please populate with products before creating promotions"
-    pbar = tqdm(products)
-    for row in pbar:
+    pbar = tqdm(range(amount))
+    for ix in pbar:
         pbar.set_description("Creating promotions")
         p = Promotion()
         p.product = choice(products)
         p.discount = choice(DISCOUNTS)
         p.shipping_discount = choice(DISCOUNTS)
         with app.app_context():
-            db.session.append(p)
+            db.session.add(p)
             db.session.commit()
         promotions.append(p)
     return promotions
@@ -81,15 +81,19 @@ def sellers_factory(app, amount):
     """
     sellers = []
     sample_df = load_dataset(sample=amount, columns=['sellers'])
-    pbar = tqdm(sample_df)
-    for row in pbar:
+    pbar = tqdm(sample_df.iterrows())
+    for _, row in pbar:
         pbar.set_description("Creating sellers")
         s = Seller()
-        s.name = row['sellers']
-        with app.app_context():
-            db.session.append(s)
-            db.session.commit()
-        sellers.append(s)
+        try:
+            s.name = row.get('sellers')
+        except KeyError:
+            continue
+        else:
+            with app.app_context():
+                db.session.add(s)
+                db.session.commit()
+            sellers.append(s)
     return sellers
 
 
@@ -98,9 +102,10 @@ def populate(app, n_sellers=10, n_products=100, n_promotions=50):
     `n_products` class::Product instances and `n_promotions` class::Promotion
     instances.
     """
+    import ipdb; ipdb.set_trace()
     sellers = sellers_factory(app, n_sellers)
     products = products_factory(app, n_products)
-    promotions = promotions_factory(app, n_promotions)
+    promotions = promotions_factory(n_promotions)
     return sellers + products + promotions
 
 
