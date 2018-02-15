@@ -5,6 +5,7 @@ product_item = api.model('Product item', {
     'id': fields.Integer(readOnly=True,
                          description='Product item unique identifier'),
     'name': fields.String(required=True, description='Product name'),
+    'price': fields.Float(required=True, description='Product price'),
     'description': fields.String(required=True,
                                  description='Product description'),
     'seller_id': fields.Integer(description='Seller id'),
@@ -29,9 +30,9 @@ promotion_item = api.model('Promotion', {
     'discount': fields.Integer(description='Price discount'),
     'shipping_discount': fields.Integer(description='Shipping discount'),
     'product_id': fields.Integer(description='Product id'),
-    'product': fields.String(attribute='product.name')
+    'product': fields.String(attribute='product.name'),
 })
 
 page_of_promotions = api.inherit('Page of promotions', pagination, {
-    'promotions': fields.List(fields.Nested(promotion_item))
+    'items': fields.List(fields.Nested(promotion_item))
 })
