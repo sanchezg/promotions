@@ -72,7 +72,6 @@ class ProductItem(Resource):
 class PromotionCollection(Resource):
 
     @api.expect(pagination_arguments)
-    @api.expect(promotion_filters)
     @api.marshal_with(page_of_promotions)
     def get(self):
         """Returns list of promotions.
@@ -80,12 +79,8 @@ class PromotionCollection(Resource):
         args = pagination_arguments.parse_args(request)
         page = args.get('page', 1)
         per_page = args.get('per_page', 10)
-        prom_args = promotion_filters.parse_args(request)
-        product_id = prom_args.get('product')
 
         query = Promotion.query
-        if product_id is not None:
-            query = query.filter(Promotion.product_id == product_id)
         promotions = query.paginate(page, per_page, error_out=False)
 
         return promotions
